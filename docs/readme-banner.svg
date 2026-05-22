@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 200" role="img" aria-label="ITBackup by IT Service">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="920" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0D47A1"/>
+      <stop offset="0.55" stop-color="#1565C0"/>
+      <stop offset="1" stop-color="#1B5E20"/>
+    </linearGradient>
+    <linearGradient id="iconBg" x1="40" y1="40" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1565C0"/>
+      <stop offset="1" stop-color="#2E7D32"/>
+    </linearGradient>
+  </defs>
+  <rect width="920" height="200" rx="16" fill="url(#bg)"/>
+  <rect x="40" y="40" width="120" height="120" rx="28" fill="url(#iconBg)"/>
+  <path fill="#FFFFFF" d="M100 72 L124 96 H112 V112 H88 V96 H76 Z"/>
+  <rect x="82" y="118" width="36" height="8" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <rect x="86" y="132" width="28" height="22" rx="8" fill="#FFFFFF" opacity="0.88"/>
+  <!-- ????? ? SVG — ?????? ??? ??????; ? README ???????????? readme-banner.png -->
+  <text x="190" y="88" fill="#FFFFFF" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="700">ITBackup</text>
+  <text x="190" y="122" fill="#E3F2FD" font-family="Segoe UI, Arial, sans-serif" font-size="20">&#1056;&#1091;&#1095;&#1085;&#1086;&#1081; &#1073;&#1101;&#1082;&#1072;&#1087; 1&#1057; &#1085;&#1072; USB &#183; &#1086;&#1076;&#1085;&#1072; &#1082;&#1085;&#1086;&#1087;&#1082;&#1072;</text>
+  <text x="190" y="158" fill="#C8E6C9" font-family="Segoe UI, Arial, sans-serif" font-size="16">IT Service &#183; &#1053;&#1086;&#1103;&#1073;&#1088;&#1100;&#1089;&#1082; &#183; it.nojabrsk.info</text>
+</svg>

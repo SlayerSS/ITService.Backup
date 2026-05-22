@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <AssemblyName>ITBackup</AssemblyName>
+    <Product>ITBackup</Product>
+    <Company>IT Service</Company>
+    <Version>1.0.0</Version>
+    <Description>ITBackup — ручной бэкап 1С на USB, одна кнопка</Description>
+    <Authors>IT Service</Authors>
+    <Copyright>Copyright © IT Service 2026</Copyright>
+    <PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>
+    <RepositoryType>git</RepositoryType>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AlphaVSS" Version="2.0.3" />
+    <PackageReference Include="AlphaVSS.Native.NetCore" Version="2.0.3" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
+  </ItemGroup>
+
+  <!-- Управляемый SNI на Windows — подключение к SQL без отдельной native DLL -->
+  <ItemGroup>
+    <RuntimeHostConfigurationOption Include="Switch.Microsoft.Data.SqlClient.UseManagedNetworkingOnWindows" Value="true" />
+  </ItemGroup>
+
+  <!-- AlphaVSS: встраиваем DLL в сборку → %ProgramData%\ITBackup\vss-runtime при работе -->
+  <PropertyGroup>
+    <_AlphaVssNativePkg>$(NuGetPackageRoot)alphavss.native.netcore\2.0.3\runtimes\win-x64\native\</_AlphaVssNativePkg>
+    <_AlphaVssCommonDll>$(NuGetPackageRoot)alphavss\2.0.3\lib\netcoreapp3.1\AlphaVSS.Common.dll</_AlphaVssCommonDll>
+    <_AlphaVssEmbedDir>$(IntermediateOutputPath)alphavss-embed\</_AlphaVssEmbedDir>
+  </PropertyGroup>
+
+  <Target Name="PrepareAlphaVssEmbedded" BeforeTargets="AssignTargetPaths">
+    <MakeDir Directories="$(_AlphaVssEmbedDir)" />
+    <Copy SourceFiles="$(_AlphaVssNativePkg)AlphaVSS.x64.dll" DestinationFolder="$(_AlphaVssEmbedDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(_AlphaVssNativePkg)Ijwhost.dll" DestinationFolder="$(_AlphaVssEmbedDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(_AlphaVssCommonDll)" DestinationFolder="$(_AlphaVssEmbedDir)" SkipUnchangedFiles="true" />
+    <ItemGroup>
+      <EmbeddedResource Include="$(_AlphaVssEmbedDir)AlphaVSS.x64.dll" LogicalName="AlphaVSS.x64.dll" />
+      <EmbeddedResource Include="$(_AlphaVssEmbedDir)Ijwhost.dll" LogicalName="Ijwhost.dll" />
+      <EmbeddedResource Include="$(_AlphaVssEmbedDir)AlphaVSS.Common.dll" LogicalName="AlphaVSS.Common.dll" />
+    </ItemGroup>
+  </Target>
+
+  <!-- После publish: убрать SNI.dll из папки, если остался (при single-file + managed SNI) -->
+  <Target Name="RemovePublishedSniDll" AfterTargets="Publish" Condition="'$(PublishSingleFile)' == 'true'">
+    <Delete Files="$(PublishDir)Microsoft.Data.SqlClient.SNI.dll" ContinueOnError="true" />
+    <Delete Files="$(PublishDir)Microsoft.Data.SqlClient.SNI.arm64.dll" ContinueOnError="true" />
+    <Delete Files="$(PublishDir)Microsoft.Data.SqlClient.SNI.x64.dll" ContinueOnError="true" />
+    <Delete Files="$(PublishDir)Microsoft.Data.SqlClient.SNI.x86.dll" ContinueOnError="true" />
+  </Target>
+
+  <ItemGroup>
+    <Resource Include="Assets\app.ico" />
+    <Content Include="Assets\app-icon.svg" CopyToOutputDirectory="Never" />
+  </ItemGroup>
+
+</Project>

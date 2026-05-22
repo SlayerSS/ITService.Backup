@@ -1,0 +1,21 @@
+# Build
+[Bb]in/
+[Oo]bj/
+dist/
+dist-full/
+**/alphavss-embed/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.DotSettings.user
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs and local config
+*.log

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="ITBackup">
+  <defs>
+    <linearGradient id="bg" x1="32" y1="24" x2="224" y2="232" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1565C0"/>
+      <stop offset="1" stop-color="#2E7D32"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="52" fill="url(#bg)"/>
+  <!-- стрелка «сохранить вниз» -->
+  <path fill="#FFFFFF" d="M128 56 L176 104 H152 V136 H104 V104 H80 Z"/>
+  <!-- носитель (диск / USB) -->
+  <rect x="72" y="148" width="112" height="20" rx="10" fill="#FFFFFF" opacity="0.95"/>
+  <rect x="84" y="176" width="88" height="40" rx="10" fill="#FFFFFF" opacity="0.88"/>
+  <rect x="108" y="188" width="40" height="8" rx="4" fill="#1565C0" opacity="0.35"/>
+</svg>
