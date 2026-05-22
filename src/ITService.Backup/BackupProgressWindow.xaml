@@ -1,0 +1,107 @@
+<Window x:Class="ITService.Backup.BackupProgressWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Резервное копирование — ITBackup"
+        Icon="/Assets/app.ico"
+        Height="600" Width="540"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Выполняется резервное копирование" FontSize="16" FontWeight="SemiBold"
+                   Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,12"/>
+
+        <TextBlock x:Name="PercentText" Grid.Row="1" FontSize="28" FontWeight="Bold"
+                   Foreground="{StaticResource PrimaryBrush}" HorizontalAlignment="Center" Margin="0,0,0,8"
+                   Text="0%"/>
+
+        <ProgressBar x:Name="ProgressBar" Grid.Row="2" Height="14" Minimum="0" Maximum="100"
+                     Value="0" Margin="0,0,0,12"/>
+
+        <Border Grid.Row="3" Style="{StaticResource CardBorder}" Padding="10">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" x:Name="CurrentActionText" FontWeight="SemiBold"
+                           TextWrapping="Wrap" Margin="0,0,0,8" Text="Подготовка..."/>
+                <TextBlock DockPanel.Dock="Top" Text="Выполнено:" FontSize="11"
+                           Foreground="{StaticResource MutedBrush}" Margin="0,0,0,4"/>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="130">
+                    <ItemsControl x:Name="CompletedList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" FontSize="12" Margin="0,2,0,2"
+                                           Foreground="{StaticResource SuccessBrush}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <Border x:Name="FactPanel" Grid.Row="4" Margin="0,12,0,0" Padding="0"
+                BorderThickness="2" BorderBrush="{StaticResource PrimaryBrush}"
+                CornerRadius="10">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#FFFFFF" Offset="0"/>
+                    <GradientStop Color="#E8F5E9" Offset="0.45"/>
+                    <GradientStop Color="#E3F2FD" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="18" ShadowDepth="4" Opacity="0.28"
+                                  Color="{StaticResource PrimaryColor}"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="6"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" CornerRadius="8,0,0,8">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#1565C0" Offset="0"/>
+                            <GradientStop Color="#2E7D32" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <StackPanel Grid.Column="1" Margin="14,10,10,10">
+                    <TextBlock x:Name="FactCaptionText"
+                               Text="Факты о нас · IT Service"
+                               FontSize="11" FontWeight="Bold"
+                               Foreground="{StaticResource PrimaryDarkBrush}"
+                               Margin="0,0,0,6"/>
+                    <ScrollViewer x:Name="FactScroll"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  MaxHeight="108">
+                        <TextBlock x:Name="FactText"
+                                   FontSize="12.5" FontWeight="SemiBold"
+                                   LineHeight="19"
+                                   TextWrapping="Wrap"
+                                   Foreground="{StaticResource TextBrush}"
+                                   Text="Загрузка..."/>
+                    </ScrollViewer>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Button Grid.Row="5" x:Name="CancelButton" Content="Отменить копирование"
+                Style="{StaticResource SecondaryButton}" Padding="12,8"
+                Margin="0,12,0,0" HorizontalAlignment="Stretch"
+                Click="CancelButton_Click"/>
+
+        <TextBlock Grid.Row="6" x:Name="HintText" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                   TextWrapping="Wrap" Margin="0,10,0,0"
+                   Text="VSS для занятых файлов · it.nojabrsk.info · 8 961 552-52-52"/>
+    </Grid>
+</Window>

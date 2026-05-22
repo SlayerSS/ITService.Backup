@@ -1,0 +1,177 @@
+<Window x:Class="ITService.Backup.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ITBackup — Резервное копирование"
+        Icon="/Assets/app.ico"
+        Height="640" Width="480"
+        MinHeight="560" MinWidth="440"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize">
+    <DockPanel Margin="16,16,16,20" LastChildFill="True">
+
+        <!-- Нижняя панель: кнопки -->
+        <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="BackupButton" Content="Сделать резервную копию"
+                        Style="{StaticResource SuccessButton}" Padding="14,10" Click="BackupButton_Click"/>
+                <Button Grid.Column="1" Content="Настройки" Margin="8,0,0,0" MinWidth="96" Padding="12,10"
+                        Style="{StaticResource SecondaryButton}" Click="SettingsButton_Click"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- Верх: сжимается и прокручивается при нехватке места -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="ITBackup" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"/>
+                    <TextBlock Text="Резервное копирование · 1С · SQL · папки" FontSize="11" Foreground="{StaticResource MutedBrush}"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                           TextAlignment="Right">
+                    <Hyperlink NavigateUri="https://it.nojabrsk.info/" RequestNavigate="Hyperlink_RequestNavigate"
+                               Foreground="{StaticResource MutedBrush}" FontSize="10">
+                        it.nojabrsk.info
+                    </Hyperlink>
+                    <LineBreak/>
+                    <Run Text="8 961 552-52-52"/>
+                </TextBlock>
+            </Grid>
+
+            <Border x:Name="InfoBannerBorder" Grid.Row="1" Height="54" Background="#F1F8E9" BorderBrush="#C5E1A5"
+                    BorderThickness="1" CornerRadius="4" Padding="10,6,10,8" Margin="0,0,0,10"
+                    SizeChanged="InfoBannerBorder_SizeChanged">
+                <DockPanel LastChildFill="True">
+                    <Button x:Name="InfoBannerMoreButton" DockPanel.Dock="Bottom" Content="Показать полностью"
+                            Visibility="Collapsed" HorizontalAlignment="Right" Margin="0,2,0,0"
+                            Padding="0" BorderThickness="0" Background="Transparent" Cursor="Hand"
+                            FontSize="10" Foreground="{StaticResource PrimaryBrush}"
+                            Click="InfoBannerMoreButton_Click"/>
+                    <TextBlock x:Name="InfoBannerText" TextWrapping="Wrap" FontSize="11"
+                               Foreground="#33691E" VerticalAlignment="Center" LineHeight="13"/>
+                </DockPanel>
+            </Border>
+
+            <Grid Grid.Row="2" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="UsbPrevButton" Grid.Column="0" Visibility="Visible" IsEnabled="False"
+                        Style="{StaticResource UsbNavButton}" Margin="0,0,4,0"
+                        ToolTip="Предыдущий USB-накопитель" Click="UsbPrevButton_Click">
+                    <Viewbox Width="8" Height="36" Stretch="Uniform">
+                        <Path Data="M 14 2 L 4 16 L 14 30"
+                              Stroke="{StaticResource PrimaryBrush}" StrokeThickness="2.5"
+                              StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                              Fill="Transparent"/>
+                    </Viewbox>
+                </Button>
+
+                <Border Grid.Column="1" Style="{StaticResource CardBorder}" Padding="12" MaxHeight="200">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Ellipse Grid.Row="0" Grid.Column="0" x:Name="UsbIndicator" Width="10" Height="10"
+                                 Fill="#B0BEC5" Margin="0,4,8,0" VerticalAlignment="Top"/>
+                        <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="0,4">
+                            <TextBlock x:Name="UsbStatusText" FontWeight="SemiBold" FontSize="13" TextWrapping="Wrap"/>
+                            <TextBlock x:Name="UsbSwitcherHint" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                                       Margin="0,2,0,0" Visibility="Collapsed"/>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="UsbFreeSpaceText"
+                                   FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="BackupEstimateText"
+                                   FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
+
+                        <Separator Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,8"/>
+
+                        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+                            <TextBlock x:Name="LastSuccessText" FontSize="11" TextWrapping="Wrap"/>
+                            <TextBlock x:Name="LastAttemptText" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                                       TextWrapping="Wrap" Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+                </Border>
+
+                <Button x:Name="UsbNextButton" Grid.Column="2" Visibility="Visible" IsEnabled="False"
+                        Style="{StaticResource UsbNavButton}" Margin="4,0,0,0"
+                        ToolTip="Следующий USB-накопитель" Click="UsbNextButton_Click">
+                    <Viewbox Width="8" Height="36" Stretch="Uniform">
+                        <Path Data="M 4 2 L 14 16 L 4 30"
+                              Stroke="{StaticResource PrimaryBrush}" StrokeThickness="2.5"
+                              StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                              Fill="Transparent"/>
+                    </Viewbox>
+                </Button>
+            </Grid>
+
+            <Border Grid.Row="3" Style="{StaticResource CardBorder}" Padding="12,10">
+                <DockPanel LastChildFill="True">
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,6">
+                        <TextBlock Text="Что копировать" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <StackPanel x:Name="SqlDiscoveryPanel" Orientation="Horizontal" Margin="0,0,10,0">
+                                <Ellipse x:Name="SqlDiscoveryDot" Width="8" Height="8" VerticalAlignment="Center" Fill="#B0BEC5"/>
+                                <TextBlock Text="SQL" FontSize="10" Margin="4,0,2,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="SqlDiscoveryHint" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel x:Name="OneCDiscoveryPanel" Orientation="Horizontal" Margin="0,0,10,0">
+                                <Ellipse x:Name="OneCDiscoveryDot" Width="8" Height="8" VerticalAlignment="Center" Fill="#B0BEC5"/>
+                                <TextBlock Text="1С" FontSize="10" Margin="4,0,2,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="OneCDiscoveryHint" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel x:Name="FoldersDiscoveryPanel" Orientation="Horizontal">
+                                <Ellipse x:Name="FoldersDiscoveryDot" Width="8" Height="8" VerticalAlignment="Center" Fill="#B0BEC5"/>
+                                <TextBlock Text="Папки" FontSize="10" Margin="4,0,2,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="FoldersDiscoveryHint" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock DockPanel.Dock="Top" x:Name="EmptyItemsText"
+                               Text="Нет элементов для копирования. Добавьте базы SQL и папки в «Настройках»."
+                               Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"
+                               FontSize="11" Margin="0,0,0,4" Visibility="Collapsed"/>
+                    <TextBlock DockPanel.Dock="Bottom" x:Name="SelectedCountText" FontSize="11"
+                               Foreground="{StaticResource MutedBrush}" Margin="0,6,0,0"/>
+                    <ScrollViewer x:Name="ItemsScroll" VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="ItemsPanel"/>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>
