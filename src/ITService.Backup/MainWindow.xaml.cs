@@ -399,6 +399,7 @@ public partial class MainWindow : Window
             UsbFreeSpaceText.Text = BuildUsbNotReadyHint();
             UsbFreeSpaceText.Foreground = (Brush)FindResource("MutedBrush");
             UpdateBackupButtonState(destinationReady: false);
+            UpdateEjectButtonState();
         }
     }
 
@@ -445,6 +446,7 @@ public partial class MainWindow : Window
 
         ScheduleBackupEstimateUpdate();
         UpdateBackupButtonState(_destStatus.IsReady);
+        UpdateEjectButtonState();
     }
 
     private void SyncUsbDriveSelection()
@@ -531,6 +533,76 @@ public partial class MainWindow : Window
     private void UsbPrevButton_Click(object sender, RoutedEventArgs e) => CycleUsbDrive(-1);
 
     private void UsbNextButton_Click(object sender, RoutedEventArgs e) => CycleUsbDrive(1);
+
+    private void UpdateEjectButtonState()
+    {
+        var useUsb = _config.BackupTarget?.UseUsbTarget ?? true;
+        if (!useUsb)
+        {
+            EjectUsbButton.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        EjectUsbButton.Visibility = Visibility.Visible;
+
+        var copying = BackupButton.Content.ToString() == "Копирование...";
+        var letter = GetCurrentEjectDriveLetter();
+        var canEject = _destStatus.IsReady
+                       && !copying
+                       && IsCurrentDriveRemovable(letter);
+
+        EjectUsbButton.IsEnabled = canEject;
+    }
+
+    private string GetCurrentEjectDriveLetter()
+    {
+        if (!string.IsNullOrWhiteSpace(_destStatus.BackupBasePath))
+        {
+            var root = Path.GetPathRoot(_destStatus.BackupBasePath);
+            var letter = DriveLetterHelper.Normalize(root);
+            if (!string.IsNullOrEmpty(letter))
+                return letter;
+        }
+
+        return DriveLetterHelper.Normalize(_config.Usb?.DriveLetter);
+    }
+
+    private static bool IsCurrentDriveRemovable(string letter)
+    {
+        var drive = DriveLetterHelper.TryGetDrive(letter, requireRemovable: false);
+        return drive?.DriveType == DriveType.Removable;
+    }
+
+    private void EjectUsbButton_Click(object sender, RoutedEventArgs e)
+    {
+        var letter = GetCurrentEjectDriveLetter();
+        if (string.IsNullOrEmpty(letter))
+        {
+            AppDialog.Warning(this, "Не выбран диск для извлечения.", "Безопасное извлечение");
+            return;
+        }
+
+        var drive = DriveLetterHelper.TryGetDrive(letter, requireRemovable: false);
+        var label = drive != null
+                    && UsbService.TryProbeDrive(drive, out _, out var volumeLabel, out _, out _, out _)
+                    && !string.IsNullOrWhiteSpace(volumeLabel)
+            ? $"«{volumeLabel}» "
+            : "";
+
+        if (!AppDialog.Question(this,
+                $"Извлечь съёмный диск {label}{letter}:?\n\nУбедитесь, что копирование завершено.",
+                "Безопасное извлечение"))
+            return;
+
+        if (!UsbService.TryEjectRemovableDrive(letter, out var error))
+        {
+            AppDialog.Warning(this, error, "Не удалось извлечь");
+            return;
+        }
+
+        AppDialog.Success(this, $"Диск {letter}: можно физически отключить.", "Готово");
+        RefreshUsbAndHistory();
+    }
 
     private void RebuildItems()
     {
@@ -743,6 +815,7 @@ public partial class MainWindow : Window
                          || _config.Files.Count > 0;
         var copying = BackupButton.Content.ToString() == "Копирование...";
         BackupButton.IsEnabled = destinationReady && anyChecked && !_spaceInsufficient && !copying;
+        UpdateEjectButtonState();
     }
 
     private async void BackupButton_Click(object sender, RoutedEventArgs e)
@@ -786,6 +859,7 @@ public partial class MainWindow : Window
 
         BackupButton.IsEnabled = false;
         BackupButton.Content = "Копирование...";
+        UpdateEjectButtonState();
 
         BackupProgressWindow? progressWindow = null;
         using var backupCts = new CancellationTokenSource();

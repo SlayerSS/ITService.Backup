@@ -32,6 +32,9 @@ public sealed class UsbService
 
     public long GetFreeBytes(UsbSettings usb) => GetDriveStatus(usb).FreeBytes;
 
+    public static bool TryEjectRemovableDrive(string? driveLetter, out string errorMessage) =>
+        RemovableDriveEjectHelper.TryEject(driveLetter, out errorMessage);
+
     public static List<DriveInfo> DetectRemovableDrives() =>
         DetectBackupDrives(removableOnly: true);
 
