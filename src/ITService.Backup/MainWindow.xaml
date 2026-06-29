@@ -101,6 +101,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -121,9 +122,15 @@
                         <TextBlock Grid.Row="2" Grid.Column="1" x:Name="BackupEstimateText"
                                    FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
 
-                        <Separator Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,8"/>
+                        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="EjectUsbButton"
+                                Content="Безопасно извлечь USB" Style="{StaticResource SecondaryButton}"
+                                Margin="0,8,0,0" Padding="10,6" HorizontalAlignment="Left"
+                                Visibility="Collapsed" IsEnabled="False"
+                                Click="EjectUsbButton_Click"/>
 
-                        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+                        <Separator Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,8"/>
+
+                        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">
                             <TextBlock x:Name="LastSuccessText" FontSize="11" TextWrapping="Wrap"/>
                             <TextBlock x:Name="LastAttemptText" FontSize="10" Foreground="{StaticResource MutedBrush}"
                                        TextWrapping="Wrap" Margin="0,2,0,0"/>
