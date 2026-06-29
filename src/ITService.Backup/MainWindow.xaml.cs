@@ -928,7 +928,7 @@ public partial class MainWindow : Window
         finally
         {
             progressWindow?.Close();
-            BackupButton.Content = "Сделать резервную копию";
+            BackupButton.Content = "Сделать копию";
             RefreshNewFolderIdsAfterSelectionSaved();
             RefreshUsbAndHistory();
             RebuildItems();
